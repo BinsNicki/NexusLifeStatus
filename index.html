@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS LIFE · ROLEPLAY</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000000;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            letter-spacing: -0.02em;
+        }
+
+        .content {
+            text-align: center;
+            max-width: 700px;
+            width: 100%;
+            opacity: 0;
+            animation: fadeIn 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        h1 {
+            font-size: 6rem;
+            font-weight: 800;
+            line-height: 0.95;
+            color: white;
+            margin-bottom: 8px;
+            letter-spacing: -0.03em;
+            text-transform: uppercase;
+            transform: translateY(30px) scale(0.98);
+            animation: titleReveal 1.2s cubic-bezier(0.23, 1, 0.32, 1) 0.1s forwards;
+            opacity: 0;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: 'NEXUS LIFE';
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: rgba(255, 255, 255, 0.1);
+            filter: blur(8px);
+            z-index: -1;
+            animation: glowPulse 3s infinite;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            font-weight: 350;
+            letter-spacing: 12px;
+            text-transform: uppercase;
+            color: #6b6b6b;
+            margin-bottom: 90px;
+            display: block;
+            transform: translateY(20px);
+            animation: subtitleReveal 1s cubic-bezier(0.23, 1, 0.32, 1) 0.3s forwards;
+            opacity: 0;
+            position: relative;
+        }
+
+        .subtitle span {
+            display: inline-block;
+            animation: letterFloat 4s infinite;
+            animation-delay: calc(var(--i) * 0.1s);
+        }
+
+        .subtitle::before {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #888, transparent);
+            animation: lineExpand 0.8s ease-out 0.8s forwards;
+        }
+
+        .progress-wrapper {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            transform: translateY(20px);
+            animation: progressReveal 1s cubic-bezier(0.23, 1, 0.32, 1) 0.5s forwards;
+            opacity: 0;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 2px;
+            background: #141414;
+            border-radius: 0;
+            overflow: hidden;
+            position: relative;
+            transform-origin: left;
+            animation: scaleXIn 1s cubic-bezier(0.23, 1, 0.32, 1) 0.7s forwards;
+            transform: scaleX(0);
+        }
+
+        .progress-bar-fill {
+            width: 68%;
+            height: 100%;
+            background: white;
+            border-radius: 0;
+            position: relative;
+            animation: fillPulse 2.5s infinite, fillShimmer 3s infinite;
+            transform-origin: left;
+            animation: progressLoad 1.2s cubic-bezier(0.23, 1, 0.32, 1) 0.9s forwards, fillPulse 2.5s infinite 2s, fillShimmer 3s infinite 2s;
+            transform: scaleX(0);
+        }
+
+        .progress-bar-fill::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.8), 
+                transparent
+            );
+            animation: sweep 2s infinite;
+            transform: translateX(-100%);
+        }
+
+        .progress-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 6px;
+            height: 6px;
+            background: white;
+            filter: blur(3px);
+            opacity: 0;
+            animation: glowDot 1.5s infinite alternate;
+        }
+
+        .progress-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+            color: #2a2a2a;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            padding: 0 2px;
+        }
+
+        .progress-indicator span {
+            animation: dotFade 2s infinite;
+            opacity: 0.3;
+        }
+
+        .progress-indicator span:nth-child(1) { animation-delay: 0s; }
+        .progress-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .progress-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        .progress-indicator span:nth-child(4) { animation-delay: 0.6s; }
+        .progress-indicator span:nth-child(5) { animation-delay: 0.8s; }
+
+        .particle {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 0;
+            pointer-events: none;
+            animation: particleFloat 15s infinite linear;
+        }
+
+        .particle:nth-child(1) { transform: translate(-50%, -50%) translateX(200px) translateY(-100px); animation-delay: 0s; width: 1px; height: 1px; }
+        .particle:nth-child(2) { transform: translate(-50%, -50%) translateX(-250px) translateY(150px); animation-delay: 2s; width: 2px; height: 2px; }
+        .particle:nth-child(3) { transform: translate(-50%, -50%) translateX(300px) translateY(200px); animation-delay: 4s; width: 1px; height: 1px; }
+        .particle:nth-child(4) { transform: translate(-50%, -50%) translateX(-200px) translateY(-150px); animation-delay: 6s; width: 2px; height: 2px; }
+        .particle:nth-child(5) { transform: translate(-50%, -50%) translateX(150px) translateY(-200px); animation-delay: 8s; width: 1px; height: 1px; }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes titleReveal {
+            0% { opacity: 0; transform: translateY(30px) scale(0.98); letter-spacing: -0.1em; }
+            100% { opacity: 1; transform: translateY(0) scale(1); letter-spacing: -0.03em; }
+        }
+
+        @keyframes subtitleReveal {
+            0% { opacity: 0; transform: translateY(20px); letter-spacing: 20px; }
+            100% { opacity: 1; transform: translateY(0); letter-spacing: 12px; }
+        }
+
+        @keyframes progressReveal {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes scaleXIn {
+            0% { transform: scaleX(0); }
+            100% { transform: scaleX(1); }
+        }
+
+        @keyframes progressLoad {
+            0% { transform: scaleX(0); }
+            100% { transform: scaleX(1); }
+        }
+
+        @keyframes fillPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.95; }
+        }
+
+        @keyframes fillShimmer {
+            0% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+            100% { filter: brightness(1); }
+        }
+
+        @keyframes sweep {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
+        }
+
+        @keyframes glowDot {
+            0% { opacity: 0.3; filter: blur(2px); }
+            100% { opacity: 1; filter: blur(6px); }
+        }
+
+        @keyframes dotFade {
+            0%, 100% { opacity: 0.3; color: #2a2a2a; }
+            50% { opacity: 1; color: #888; }
+        }
+
+        @keyframes letterFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.1; filter: blur(8px); }
+            50% { opacity: 0.15; filter: blur(12px); }
+        }
+
+        @keyframes lineExpand {
+            0% { width: 0; opacity: 0; }
+            100% { width: 60px; opacity: 1; }
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translate(-50%, -50%) translateX(calc(var(--x) * 1px)) translateY(calc(var(--y) * 1px)) scale(0); opacity: 0; }
+        }
+
+        @media (max-width: 700px) {
+            h1 {
+                font-size: 4.5rem;
+            }
+            .subtitle {
+                font-size: 1.1rem;
+                letter-spacing: 8px;
+                margin-bottom: 70px;
+            }
+            @keyframes subtitleReveal {
+                0% { opacity: 0; transform: translateY(20px); letter-spacing: 16px; }
+                100% { opacity: 1; transform: translateY(0); letter-spacing: 8px; }
+            }
+        }
+
+        @media (max-width: 500px) {
+            h1 {
+                font-size: 3.2rem;
+            }
+            .subtitle {
+                font-size: 0.9rem;
+                letter-spacing: 6px;
+                margin-bottom: 60px;
+            }
+            @keyframes subtitleReveal {
+                0% { opacity: 0; transform: translateY(20px); letter-spacing: 12px; }
+                100% { opacity: 1; transform: translateY(0); letter-spacing: 6px; }
+            }
+        }
+
+        @media (max-width: 380px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hintergrund Partikel -->
+    <div class="particle" style="--x: 400; --y: -200;"></div>
+    <div class="particle" style="--x: -350; --y: 250;"></div>
+    <div class="particle" style="--x: 450; --y: 300;"></div>
+    <div class="particle" style="--x: -300; --y: -250;"></div>
+    <div class="particle" style="--x: 250; --y: -300;"></div>
+    <div class="particle" style="--x: -400; --y: 200;"></div>
+    <div class="particle" style="--x: 500; --y: -150;"></div>
+    <div class="particle" style="--x: -450; --y: -200;"></div>
+
+    <div class="content">
+        <h1>NEXUS LIFE</h1>
+        <span class="subtitle">
+            <span style="--i: 1;">R</span>
+            <span style="--i: 2;">O</span>
+            <span style="--i: 3;">L</span>
+            <span style="--i: 4;">E</span>
+            <span style="--i: 5;">P</span>
+            <span style="--i: 6;">L</span>
+            <span style="--i: 7;">A</span>
+            <span style="--i: 8;">Y</span>
+        </span>
+        
+        <div class="progress-wrapper">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" style="width: 68%;"></div>
+            </div>
+            <div class="progress-indicator">
+                <span>●</span>
+                <span>●</span>
+                <span>●</span>
+                <span>●</span>
+                <span>●</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
